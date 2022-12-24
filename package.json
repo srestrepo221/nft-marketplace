@@ -29,7 +29,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy/localhost": "hardhat run scripts/deploy.js --network localhost",
+    "deploy/localhost": "npx hardhat run src/backend/scripts/deploy.js --network localhost",
     "deploy/goerli": "hardhat run scripts/deploy.js --network goerli"
   },
   "eslintConfig": {
