@@ -7,12 +7,15 @@ async function main() {
 
   const NFT = await ethers.getContractFactory("NFT");
   const nft = await NFT.deploy();
+  const Market = await ethers.getContractFactory("Market");
+  const market = await Market.deploy(1);
 
   console.log("NFT contract address:", nft.address);
-
-  
+  console.log("Market-place contract address:", market.address);
+ 
   // For each contract, pass the deployed contract and name to this function to save a copy of the contract ABI and address to the front end.
   saveFrontendFiles(nft , "NFT");
+  saveFrontendFiles(market , "Market");
 }
 
 function saveFrontendFiles(contract, name) {
