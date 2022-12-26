@@ -15,7 +15,7 @@ contract Market is ReentrancyGuard {
 	uint public itemCount;
 
 	struct Item{
-		uint itemId; 
+		uint itemId;
 		IERC721 nft;
 		uint tokenId;
 		uint price;
@@ -28,6 +28,14 @@ contract Market is ReentrancyGuard {
 		uint tokenId,
 		uint price,
 		address indexed seller
+	);
+	event Bought(
+		uint itemId,
+		address indexed nft,
+		uint tokenId,
+		uint price,
+		address indexed seller,
+		address indexed buyer
 	);
 
 	// itemId -> Item
@@ -61,5 +69,42 @@ contract Market is ReentrancyGuard {
 			_price,
 			msg.sender
 		);
+	}
+
+	function purchaseItem(uint _itemId) external payable nonReentrant {
+		uint _totalPrice = getTotalPrice(_itemId);
+		Item storage item = items[_itemId];
+		require(_itemId > 0 && _itemId <= itemCount, "item doesnt exist");
+		require(msg.value >= _totalPrice, "not enough funds");
+		require(!item.sold, "item already sold");
+
+		// pay seller
+		(bool success, ) = item.seller.call{value : item.price }("");
+		require(success, "Transfer failed.");
+		//item.seller.transfer(item.price);
+
+		// pay Fee Account
+		uint256 Value = (_totalPrice - item.price);
+		(bool sent, ) = feeAccount.call{value : Value }("");
+		require(sent, "Transfer failed.");
+		// feeAccount.transfer(_totalPrice - item.price);
+
+		// update item to sold
+		item.sold = true;
+		// transfer nft to buyer
+		item.nft.transferFrom(address(this), msg.sender, item.tokenId);
+		// emit Bought Event
+		emit Bought(
+			_itemId,
+			address(item.nft),
+			item.tokenId,
+			item.price,
+			item.seller,
+			msg.sender
+		);
+	}
+
+	function getTotalPrice(uint _itemId) view public returns(uint) {
+		return(items[_itemId].price*(100 * feePercent)/100);
 	}
 }
