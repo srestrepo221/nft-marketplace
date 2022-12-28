@@ -4,7 +4,7 @@ const toWei = (num) => ethers.utils.parseEther(num.toString()) // 1 ether = 10**
 const fromWei = (num) => ethers.utils.formatEther(num)
 
 describe("NFT-Marketplace",  function() {
-  let deployer, addr1, addr2, NFT, nft, Market, market, addrs;
+  let deployer, addr1, addr2, NFT, nft, Market, market;
   let feePercent = 1
   let URI = "Sample URI"
   beforeEach(async function() {
@@ -105,12 +105,14 @@ describe("NFT-Marketplace",  function() {
           addr1.address,
           addr2.address
         )
-      const sellerFinalEthBal = await addr1.getBalance()
+          const sellerFinalEthBal = await addr1.getBalance()
           const feeAccountFinalEthBal = await deployer.getBalance()
           // Item should be marked as sold
           expect((await market.items(1)).sold).to.equal(true)
           // Seller should receive payment for the price of the NFT sold.
           expect(+fromWei(sellerFinalEthBal)).to.equal(+cost + +fromWei(sellerInitialEthBal))
+
+          
           
           // feeAccount should receive fee
           // expect(+fromWei(feeAccountFinalEthBal)).to.equal(+fee + +fromWei(feeAccountInitialEthBal))
@@ -128,16 +130,15 @@ describe("NFT-Marketplace",  function() {
       ).to.be.revertedWith("item doesnt exist");
       // In this instance, fails when buyer only sends enough ether to cover the price of the nft
       // not the additional market fee.
-      /*
+      /*   
       await expect(
         market.connect(addr2).purchaseItem(1, {value: toWei(cost)})
       ).to.be.revertedWith("not enough ether to cover item price and market fee");
       // addr2 purchases item 1
-      // await market.connect(addr2).purchaseItem(1, {value: totalPriceInWei})
-      // addr3 tries purchasing item 1 after its been sold 
-      const addr3 = addrs[0]
+      await market.connect(addr2).purchaseItem(1, { value: totalPriceInWei })
+      // deployer tries purchasing item 1 after its been sold 
       await expect(
-        market.connect(addr3).purchaseItem(1, {value: totalPriceInWei})
+        market.connect(deployer).purchaseItem(1, {value: totalPriceInWei})
       ).to.be.revertedWith("item already sold");
       */
     })
