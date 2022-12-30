@@ -11,9 +11,9 @@ import NFTAbi from '../contractsData/NFT.json'
 import Navigation from './Navbar';
 import Home from './Home'
 import Create from './Create'
-import MyListedItem from './MyListedItems'
+import MyListedItems from './MyListedItems'
 import MyPurchases from './MyPurchases'
-import logo from './logo.png';
+//import logo from './logo.png';
 import './App.css';
 
 function App() {
@@ -58,8 +58,12 @@ function App() {
               <Route path="/create" element={
                 <Create marketplace={marketplace} nft={nft} />
               } />
-              <Route path="/my-listed-items" />
-              <Route path="/my-purchases" />
+              <Route path="/my-listed-items" element={
+                <MyListedItems marketplace={marketplace} nft={nft} account={account} />
+              } />
+              <Route path="/my-purchases" element={
+                <MyPurchases marketplace={marketplace} nft={nft} account={account} />
+              } />
             </Routes>
           )}
       </div>
