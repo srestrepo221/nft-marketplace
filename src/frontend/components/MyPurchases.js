@@ -15,8 +15,9 @@ export default function MyPurchases({ marketplace, nft, account }) {
       i = i.args
       // get uri url from nft contract
       const uri = await nft.tokenURI(i.tokenId)
+      const new_uri = uri.replace("https://nft-capstone.infura-ipfs.io/ipfs/")
       // use uri to fetch the nft metadata stored on ipfs 
-      const response = await fetch(uri)
+      const response = await fetch(new_uri)
       const metadata = await response.json()
       // get total price of item (item price + fee)
       const totalPrice = await marketplace.getTotalPrice(i.itemId)
