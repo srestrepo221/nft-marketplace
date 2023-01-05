@@ -1,18 +1,23 @@
 const { expect } =  require("chai");
+const { ethers } = require('hardhat');
 
 const toWei = (num) => ethers.utils.parseEther(num.toString()) // 1 ether = 10**18 wei
 const fromWei = (num) => ethers.utils.formatEther(num)
 
+const tokens = (n) => {
+  return ethers.utils.parseUnits(n.toString(), 'ether')
+}
+
 describe("NFT-Marketplace",  function() {
-  let deployer, addr1, addr2, NFT, nft, Market, market;
-  let feePercent = 1
+  let deployer, addr1, addr2, addrs, NFT, nft, Market, market;
+  let feePercent = 1;
   let URI = "Sample URI"
   beforeEach(async function() {
     // Get contract factories 
     const NFT = await ethers.getContractFactory("NFT");
     const Market = await ethers.getContractFactory("Market");
     // Get signers
-    [deployer, addr1,addr2]= await ethers.getSigners();
+    [deployer, addr1, addr2, addrs]= await ethers.getSigners();
     // Deploy contracts
     nft = await NFT.deploy();
     market = await Market.deploy(feePercent);
@@ -110,17 +115,15 @@ describe("NFT-Marketplace",  function() {
           // Item should be marked as sold
           expect((await market.items(1)).sold).to.equal(true)
           // Seller should receive payment for the price of the NFT sold.
-          expect(+fromWei(sellerFinalEthBal)).to.equal(+cost + +fromWei(sellerInitialEthBal))
-
-          
+          expect(+fromWei(sellerFinalEthBal)).to.equal(+cost + +fromWei(sellerInitialEthBal))          
           
           // feeAccount should receive fee
-          // expect(+fromWei(feeAccountFinalEthBal)).to.equal(+fee + +fromWei(feeAccountInitialEthBal))
+          expect(+fromWei(feeAccountFinalEthBal)).to.equal(+fee + +fromWei(feeAccountInitialEthBal))
           
           // The buyer should now own the nft
           expect(await nft.ownerOf(1)).to.equal(addr2.address);
     })
-    it("should fail for invalid item ids, sold items and when not enough ether is paid", async function () {
+    it("Should fail for invalid item ids, sold items and when not enough ether is paid", async function () {
       // fails for invalid item ids
       await expect(
         market.connect(addr2).purchaseItem(2, { value: totalPriceInWei })
