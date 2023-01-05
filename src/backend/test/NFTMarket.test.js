@@ -9,20 +9,31 @@ const tokens = (n) => {
 }
 
 describe("NFT-Marketplace",  function() {
-  let deployer, addr1, addr2, addrs, NFT, nft, Market, market;
+  let NFT;
+  let nft;
+  let Marketplace;
+  let marketplace
+  let deployer;
+  let addr1;
+  let addr2;
+  let addrs;
   let feePercent = 1;
-  let URI = "Sample URI"
+  let URI = "sample URI"
+
   beforeEach(async function() {
     // Get contract factories 
     const NFT = await ethers.getContractFactory("NFT");
-    const Market = await ethers.getContractFactory("Market");
-    // Get signers
-    [deployer, addr1, addr2, addrs]= await ethers.getSigners();
+    const Market = await ethers.getContractFactory("Market"); 
+    [deployer, addr1, addr2, ...addrs] = await ethers.getSigners(); // Get signers
+    
     // Deploy contracts
     nft = await NFT.deploy();
     market = await Market.deploy(feePercent);
   })
+
   describe("Deployment", function() {
+    // This test expects the owner variable stored in the contract to be equal
+    // to our Signer's owner.
     it("should track name and symbol of the nft contract", async function(){
       expect(await nft.name()).to.equal("GreenBros NFT")
       expect(await nft.symbol()).to.equal("GB")
@@ -32,7 +43,9 @@ describe("NFT-Marketplace",  function() {
       expect(await market.feePercent()).to.equal(feePercent)
     })
   })
+
   describe("Minting NFTs", function() {
+
     it("should track each minted NFT", async function(){
       // addr 1 mints an nft
       await nft.connect(addr1).mint(URI)
@@ -46,13 +59,17 @@ describe("NFT-Marketplace",  function() {
       expect(await nft.tokenURI(2)).to.equal(URI)
     })
   })
+
   describe("Making marketplace items", function() {
+    let price = 1
+    let result 
     beforeEach(async function () {
       // addr1 mints an nft
       await nft.connect(addr1).mint(URI)
       // addr1 approves marketplace to spend nft
       await nft.connect(addr1).setApprovalForAll(market.address, true)
     })
+
     it("Should track newly created item, transfer NFT from seller to marketplace and emit Offered event", async function () {
       // addr1 offers their nft at a price of 1 ether
       await expect(market.connect(addr1).makeItem(nft.address, 1, toWei(1)))
@@ -76,16 +93,18 @@ describe("NFT-Marketplace",  function() {
       expect(item.price).to.equal(toWei(1))
       expect(item.sold).to.equal(false)
     })
+
     it("Should fail if price is set to zero", async function () {
       await expect(
         market.connect(addr1).makeItem(nft.address, 1, 0)
       ).to.be.revertedWith("Price must be greater than zero");
     })
+
   })
-  describe("Purchasing market-place items", async function () {
+  describe("Purchasing market-place items", function () {
     let cost = 2
-      let fee = (feePercent/100)*cost
-      let totalPriceInWei
+    let fee = (feePercent/100)*cost
+    let totalPriceInWei
     beforeEach(async function () {
       // addr1 mints an nft
       await nft.connect(addr1).mint(URI)
@@ -110,40 +129,43 @@ describe("NFT-Marketplace",  function() {
           addr1.address,
           addr2.address
         )
-          const sellerFinalEthBal = await addr1.getBalance()
-          const feeAccountFinalEthBal = await deployer.getBalance()
-          // Item should be marked as sold
-          expect((await market.items(1)).sold).to.equal(true)
-          // Seller should receive payment for the price of the NFT sold.
-          expect(+fromWei(sellerFinalEthBal)).to.equal(+cost + +fromWei(sellerInitialEthBal))          
-          
-          // feeAccount should receive fee
-          expect(+fromWei(feeAccountFinalEthBal)).to.equal(+fee + +fromWei(feeAccountInitialEthBal))
-          
-          // The buyer should now own the nft
-          expect(await nft.ownerOf(1)).to.equal(addr2.address);
+      const sellerFinalEthBal = await addr1.getBalance()
+      const feeAccountFinalEthBal = await deployer.getBalance()
+      // Item should be marked as sold
+      expect((await market.items(1)).sold).to.equal(true)
+      // Seller should receive payment for the price of the NFT sold.
+      expect(+fromWei(sellerFinalEthBal)).to.equal(+cost + +fromWei(sellerInitialEthBal))
+      // feeAccount should receive fee
+      expect(+fromWei(feeAccountFinalEthBal)).to.equal(+fee + +fromWei(feeAccountInitialEthBal))
+      // The buyer should now own the nft
+      expect(await nft.ownerOf(1)).to.equal(addr2.address);
     })
     it("Should fail for invalid item ids, sold items and when not enough ether is paid", async function () {
       // fails for invalid item ids
       await expect(
-        market.connect(addr2).purchaseItem(2, { value: totalPriceInWei })
-      ).to.be.revertedWith("item doesnt exist");
+        market.connect(addr2).purchaseItem(2, {value: totalPriceInWei})
+      ).to.be.revertedWith("item doesn't exist");
+  
       await expect(
-        market.connect(addr2).purchaseItem(0, { value: totalPriceInWei })
-      ).to.be.revertedWith("item doesnt exist");
+        market.connect(addr2).purchaseItem(0, {value: totalPriceInWei })
+      ).to.be.revertedWith("item doesn't exist");
+      
+      // Fails when not enough ether is paid with the transaction. 
       // In this instance, fails when buyer only sends enough ether to cover the price of the nft
       // not the additional market fee.
-      /*   
+
       await expect(
         market.connect(addr2).purchaseItem(1, {value: toWei(cost)})
       ).to.be.revertedWith("not enough ether to cover item price and market fee");
+      
       // addr2 purchases item 1
-      await market.connect(addr2).purchaseItem(1, { value: totalPriceInWei })
-      // deployer tries purchasing item 1 after its been sold 
+      await market.connect(addr2).purchaseItem(1, {value: totalPriceInWei})
+      // addr3 tries purchasing item 1 after its been sold 
+      const addr3 = addrs[0]
       await expect(
-        market.connect(deployer).purchaseItem(1, {value: totalPriceInWei})
+        market.connect(addr3).purchaseItem(1, {value: totalPriceInWei})
       ).to.be.revertedWith("item already sold");
-      */
+      
     })
   })
 })
