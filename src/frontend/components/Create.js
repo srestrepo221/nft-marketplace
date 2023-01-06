@@ -6,7 +6,7 @@ import { Buffer } from 'buffer'
 const ipfsClient = require('ipfs-http-client');
 
 const projectId = '2JtTwP7nQ5uB5ubKgV8G9ZqUURh';
-const projectSecret = 'ba53e4fd2e83d04e07b843c30739a1fa';
+
 const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
 
 const client = ipfsClient.create({
