@@ -38,7 +38,9 @@ const Home = ({ marketplace, nft }) => {
 		loadMarketPlaceItems()
 	}
 	useEffect(() => {
+		// eslint-disable-next-line
 		loadMarketPlaceItems()
+
 	}, [])
 
 	if(loading) return (
