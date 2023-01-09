@@ -2,23 +2,24 @@ import { useState, useEffect } from 'react'
 import { ethers } from 'ethers'
 import { Row, Col, Card, Button } from 'react-bootstrap'
 
-const Home = ({ marketplace, nft }) => {
+
+const Home = ({ market, nft }) => {
 	const [items, setItems] = useState([])
 	const [loading, setLoading] = useState(true)
 	const loadMarketPlaceItems = async () => {
-		const itemCount = await marketplace.itemCount()
+		const itemCount = await market.itemCount()
 		let items = []
 		for (let i = 1; i <= itemCount; i++){
-			const item = await marketplace.items(i)
+			const item = await market.items(i)
 			if(!item.sold) {
 				// get uri from nft contract
 				const uri = await nft.tokenURI(item.tokenId)
-				const new_uri = uri.replace("https://nft-capstone.infura-ipfs.io/ipfs/")
+				//const new_uri = uri.replace('${subdomain}')
 				// use uri to fetch the nft metadata stored on IPFS
-				const response = await fetch(new_uri)
+				const response = await fetch(uri)
 				const metadata = await response.json()
 				// get total price of the item(item price + fee)
-				const totalPrice = await marketplace.getTotalPrice(item.itemId)
+				const totalPrice = await market.getTotalPrice(item.itemId)
 				// Add item to items array
 				items.push({
 					totalPrice,
@@ -34,7 +35,7 @@ const Home = ({ marketplace, nft }) => {
 		setLoading(false)
 	}
 	const buyMarketItem = async (item) => {
-		await (await marketplace.purchaseItem(item.itemId, { value: item.totalPrice })).wait()
+		await(await market.purchaseItem(item.itemId, {value: item.totalPrice})).wait()
 		loadMarketPlaceItems()
 	}
 	useEffect(() => {

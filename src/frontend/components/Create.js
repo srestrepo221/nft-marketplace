@@ -1,22 +1,29 @@
-import { useState } from 'react'
-import { ethers } from "ethers"
-import { Row, Form, Button } from 'react-bootstrap'
-import { Buffer } from 'buffer'
+//require("dotenv").config();
+import { useState } from 'react';
+import { ethers } from "ethers";
+import { Row, Form, Button } from 'react-bootstrap';
+import { Buffer } from 'buffer';
+import { create as ipfsHttpClient } from 'ipfs-http-client';
 
-const ipfsClient = require('ipfs-http-client');
+//const projectSecret = process.env.INFURA_API_KEY || ""
+//const ipfsClient = require('ipfs-http-client');
 
+// connect to a different API
 const projectId = '2JtTwP7nQ5uB5ubKgV8G9ZqUURh';
+const projectSecret = 'ba53e4fd2e83d04e07b843c30739a1fa';
+const subdomain = "https://nft-capstone.infura-ipfs.io";
 
-const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
+const authorization = `Basic ${Buffer.from(`${projectId}:${projectSecret}`).toString('base64')}`;
 
-const client = ipfsClient.create({
+const client = ipfsHttpClient({
 	host: 'ipfs.infura.io',
 	port: 5001,
 	protocol: 'https',
 	headers: {
-	authorization: auth,
-	},
-});
+		authorization: authorization,
+		},
+	});
+
 
 	const Create = ({ market, nft }) => {
 	const [image, setImage] = useState('')
@@ -26,22 +33,22 @@ const client = ipfsClient.create({
 
 
 	const uploadToIPFS = async (event) => {
-		event.preventDefault()
-		const file = event.target.files[0]
+		event.preventDefault();
+		const file = event.target.files[0];
 		if(typeof file !== 'undefined') {
 			try {
-				const result = await client.add(file)
-				console.log(result)
-				setImage(`https://nft-capstone.infura-ipfs.io/ipfs/${result.path}`)
+				const result = await client.add(file);
+				console.log(result);
+				setImage(`${subdomain}/ipfs/${result.path}`);
 			} catch (error) {
-				console.log("ipfs image upload error: ", error)
+				console.log("ipfs image upload error: ", error);
 			}
 		}
 	}
 	const createNFT = async () => {
 		if(!image || !price || !name || !description) return
 			try {
-				const result = await client.add(JSON.stringify({ image, name, description }))
+				const result = await client.add(JSON.stringify({image,price, name, description}))
 				mintThenList(result)
 			} catch (error) {
 				console.log("ipfs uri upload error", error)
@@ -49,16 +56,16 @@ const client = ipfsClient.create({
 	}
 
 	const mintThenList = async (result) => {
-		const uri = `https://nft-capstone.infura-ipfs.io/ipfs/${result.path}`
+		const uri = `${subdomain}/ipfs/${result.path}`;
 		// mint nft
-		await (await nft.mint(uri)).wait()
+		await(await nft.mint(uri)).wait()
 		// get tokenId of new nft
 		const id = await nft.tokenCount()
 		// approve marketplace to spend nft
-		await( await nft.setApprovalForAll(market.address, true)).wait()
+		await(await nft.setApprovalForAll(market.address, true)).wait()
 		// add nft to marketplace
 		const listingPrice = ethers.utils.parseEther(price.toString())
-		await (await market.makeItem(nft.address, id, listingPrice)).wait()
+		await(await market.makeItem(nft.address, id, listingPrice)).wait()
 	}
 	  return (
     <div className="container-fluid mt-5">

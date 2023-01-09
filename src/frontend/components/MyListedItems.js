@@ -22,26 +22,26 @@ function renderSoldItems(items) {
   )
 }
 
-export default function MyListedItems({ marketplace, nft, account }) {
+export default function MyListedItems({ market, nft, account }) {
   const [loading, setLoading] = useState(true)
   const [listedItems, setListedItems] = useState([])
   const [soldItems, setSoldItems] = useState([])
   const loadListedItems = async () => {
-    // Load all sold items that the user listed
-    const itemCount = await marketplace.itemCount()
+    //load all sold items that the user listed
+    const itemCount = await market.itemCount()
     let listedItems = []
     let soldItems = []
     for (let indx = 1; indx <= itemCount; indx++) {
-      const i = await marketplace.items(indx)
+      const i = await market.items(indx)
       if (i.seller.toLowerCase() === account) {
         // get uri url from nft contract
         const uri = await nft.tokenURI(i.tokenId)
-        const new_uri = uri.replace("https://nft-capstone.infura-ipfs.io/ipfs/")
+        //const new_uri = uri.replace("https://nft-capstone.infura-ipfs.io/ipfs/")
         // use uri to fetch the nft metadata stored on ipfs 
-        const response = await fetch(new_uri)
+        const response = await fetch(uri)
         const metadata = await response.json()
         // get total price of item (item price + fee)
-        const totalPrice = await marketplace.getTotalPrice(i.itemId)
+        const totalPrice = await market.getTotalPrice(i.itemId)
         // define listed item object
         let item = {
           totalPrice,

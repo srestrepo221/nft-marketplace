@@ -13,6 +13,7 @@
     "bootstrap": "^5.1.3",
     "buffer": "^6.0.3",
     "chai": "^4.3.6",
+    "dotenv": "^16.0.3",
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.5.4",
     "hardhat": "^2.8.4",
@@ -25,13 +26,12 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "deploy": "npx hardhat run src/backend/scripts/deploy.js --network localhost",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy/localhost": "npx hardhat run src/backend/scripts/deploy.js --network localhost",
-    "deploy/goerli": "hardhat run scripts/deploy.js --network goerli"
+    "deploy/localhost": "hardhat run src/backend/scripts/deploy.js --network localhost",
+    "deploy/goerli": "hardhat run src/backend/scripts/deploy.js --network goerli"
   },
   "eslintConfig": {
     "extends": [

@@ -2,25 +2,25 @@ import { useState, useEffect } from 'react'
 import { ethers } from "ethers"
 import { Row, Col, Card } from 'react-bootstrap'
 
-export default function MyPurchases({ marketplace, nft, account }) {
+export default function MyPurchases({ market, nft, account }) {
   const [loading, setLoading] = useState(true)
   const [purchases, setPurchases] = useState([])
   const loadPurchasedItems = async () => {
     // Fetch purchased items from marketplace by quering Offered events with the buyer set as the user
-    const filter =  marketplace.filters.Bought(null,null,null,null,null,account)
-    const results = await marketplace.queryFilter(filter)
+    const filter =  market.filters.Bought(null,null,null,null,null,account)
+    const results = await market.queryFilter(filter)
     //Fetch metadata of each nft and add that to listedItem object.
     const purchases = await Promise.all(results.map(async i => {
       // fetch arguments from each result
       i = i.args
       // get uri url from nft contract
       const uri = await nft.tokenURI(i.tokenId)
-      const new_uri = uri.replace("https://nft-capstone.infura-ipfs.io/ipfs/")
+      //const new_uri = uri.replace("https://nft-capstone.infura-ipfs.io/ipfs/")
       // use uri to fetch the nft metadata stored on ipfs 
-      const response = await fetch(new_uri)
+      const response = await fetch(uri)
       const metadata = await response.json()
       // get total price of item (item price + fee)
-      const totalPrice = await marketplace.getTotalPrice(i.itemId)
+      const totalPrice = await market.getTotalPrice(i.itemId)
       // define listed item object
       let purchasedItem = {
         totalPrice,

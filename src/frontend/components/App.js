@@ -13,14 +13,13 @@ import Home from './Home'
 import Create from './Create'
 import MyListedItems from './MyListedItems'
 import MyPurchases from './MyPurchases'
-//import logo from './logo.png';
 import './App.css';
 
 function App() {
   const [loading, setLoading] = useState(true)
   const [account, setAccount] = useState(null)
   const [nft, setNFT] = useState({})
-  const [marketplace, setMarketplace] = useState({})
+  const [market, setMarketplace] = useState({})
   // MetaMask Login/Connect
   const web3Handler = async () => {
     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -34,8 +33,8 @@ function App() {
   }
   const loadContracts = async (signer) => {
     // Get deployed copies of contracts
-    const marketplace = new ethers.Contract(MarketplaceAddress.address, MarketplaceAbi.abi, signer)
-    setMarketplace(marketplace)
+    const market = new ethers.Contract(MarketplaceAddress.address, MarketplaceAbi.abi, signer)
+    setMarketplace(market)
     const nft = new ethers.Contract(NFTAddress.address, NFTAbi.abi, signer)
     setNFT(nft)
     setLoading(false)
@@ -53,16 +52,16 @@ function App() {
           ) : (
             <Routes>
               <Route path="/" element={
-                <Home marketplace={marketplace} nft={nft} />
+                <Home market={market} nft={nft} />
               } />
               <Route path="/create" element={
-                <Create marketplace={marketplace} nft={nft} />
+                <Create market={market} nft={nft} />
               } />
               <Route path="/my-listed-items" element={
-                <MyListedItems marketplace={marketplace} nft={nft} account={account} />
+                <MyListedItems market={market} nft={nft} account={account} />
               } />
               <Route path="/my-purchases" element={
-                <MyPurchases marketplace={marketplace} nft={nft} account={account} />
+                <MyPurchases market={market} nft={nft} account={account} />
               } />
             </Routes>
           )}
