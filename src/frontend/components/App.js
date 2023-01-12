@@ -12,7 +12,7 @@ import Navigation from './Navbar';
 import Home from './Home'
 import Create from './Create'
 import MyListedItems from './MyListedItems'
-import MyPurchases from './MyPurchases'
+//import MyPurchases from './MyPurchases'
 import './App.css';
 
 function App() {
@@ -46,7 +46,7 @@ function App() {
         <Navigation web3Handler={web3Handler} account={account} />
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
-            <Spinner animation="border" style={{ display: 'flex' }} />
+            <Spinner animation="grow" variant="primary" style={{ display: 'flex' }} />
             <p className='mx-3 my-0'>Awaiting Metamask Connection...</p>
           </div>
           ) : (
@@ -59,9 +59,6 @@ function App() {
               } />
               <Route path="/my-listed-items" element={
                 <MyListedItems market={market} nft={nft} account={account} />
-              } />
-              <Route path="/my-purchases" element={
-                <MyPurchases market={market} nft={nft} account={account} />
               } />
             </Routes>
           )}

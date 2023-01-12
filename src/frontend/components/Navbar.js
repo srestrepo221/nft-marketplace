@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import { Navbar, Nav, Button, Container } from 'react-bootstrap'
-import market from './greenbros.png'
+import market from './blueshroom.png'
 
 const Navigation = ({ web3Handler, account }) => {
     return (
-        <Navbar expand="lg" bg="secondary" variant="dark">
+        <Navbar expand="lg" bg="primary" variant="dark">
             <Container>
-                <Navbar.Brand href="http://www.dappuniversity.com/bootcamp">
+                <Navbar.Brand href="https://github.com/srestrepo221/nft-marketplace">
                     <img src={market} width="40" height="40" className="" alt="" />
                     &nbsp; GreenBros NFT Marketplace
                 </Navbar.Brand>
@@ -16,7 +16,6 @@ const Navigation = ({ web3Handler, account }) => {
                         <Nav.Link as={Link} to="/">Home</Nav.Link>
                         <Nav.Link as={Link} to="/create">Create</Nav.Link>
                         <Nav.Link as={Link} to="/my-listed-items">My Listed Items</Nav.Link>
-                        <Nav.Link as={Link} to="/my-purchases">My Purchases</Nav.Link>
                     </Nav>
                     <Nav>
                         {account ? (
@@ -31,7 +30,7 @@ const Navigation = ({ web3Handler, account }) => {
 
                             </Nav.Link>
                         ) : (
-                            <Button onClick={web3Handler} variant="outline-light">Connect Wallet</Button>
+                            <Button onClick={web3Handler} variant="outline-dark">Connect Wallet</Button>
                         )}
                     </Nav>
                 </Navbar.Collapse>
