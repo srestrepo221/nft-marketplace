@@ -6,8 +6,7 @@
 - [Hardhat](https://hardhat.org/) (Development Framework)
 - [Ethers.js](https://docs.ethers.io/v5/) (Blockchain Interaction)
 - [React.js](https://reactjs.org/) (Frontend Framework)
-- [Ipfs] (Metadata storage)
-- [React] routers (Navigational components)
+- [Ipfs] (https://ipfs.tech/) (Metadata storage)
 
 ### Run tests
 `$ npx hardhat test`
@@ -17,7 +16,7 @@
 
 ### Run deployment script
 In a separate terminal execute:
-`$ npm	run deploy/localhost`
+`$ npm run deploy/localhost`
 
 ### Start frontend
 `$ npm run start`

@@ -3,14 +3,11 @@ import { ethers } from "ethers";
 import { Row, Form, Button } from 'react-bootstrap';
 import { Buffer } from 'buffer';
 import { create as ipfsHttpClient } from 'ipfs-http-client';
-//require("dotenv").config();
+
 const projectSecret = process.env.REACT_APP_INFURA_API_KEY || ""
 const projectId = process.env.REACT_APP_PROJECT_ID || ""
 
-// connect to a different API
-//const projectId = '2JtTwP7nQ5uB5ubKgV8G9ZqUURh';
-//const projectSecret = 'ba53e4fd2e83d04e07b843c30739a1fa';
-const subdomain = "https://nft-capstone.infura-ipfs.io";
+const subdomain = "https://nft-mint.infura-ipfs.io";
 
 const authorization = `Basic ${Buffer.from(`${projectId}:${projectSecret}`).toString('base64')}`;
 

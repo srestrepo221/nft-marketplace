@@ -12,7 +12,7 @@ import Navigation from './Navbar';
 import Home from './Home'
 import Create from './Create'
 import MyListedItems from './MyListedItems'
-//import MyPurchases from './MyPurchases'
+
 import './App.css';
 
 function App() {
