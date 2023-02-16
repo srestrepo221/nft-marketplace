@@ -12,6 +12,7 @@ import Navigation from './Navbar';
 import Home from './Home'
 import Create from './Create'
 import MyListedItems from './MyListedItems'
+import Info from './Info'
 
 import './App.css';
 
@@ -59,6 +60,9 @@ function App() {
               } />
               <Route path="/my-listed-items" element={
                 <MyListedItems market={market} nft={nft} account={account} />
+              } />
+              <Route path="/Info" element={
+                <Info />
               } />
             </Routes>
           )}
