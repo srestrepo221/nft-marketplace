@@ -19,6 +19,11 @@ Please make sure you have Goerli test Ether in your wallet.
 
 This project comes with a NFT & Marketplace contract, a test for the Market contract, and a script that deploys both contracts.
 
+The project has been deployed to fleek.co.
+
+https://proud-violet-3371.on.fleek.co/
+
+
 ### Run tests
 `$ npx hardhat test`
 
