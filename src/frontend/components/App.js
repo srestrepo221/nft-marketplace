@@ -48,7 +48,7 @@ function App() {
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
             <Spinner animation="grow" variant="primary" style={{ display: 'flex' }} />
-            <p className='mx-3 my-0'>Awaiting Metamask Connection...
+            <p className='mx-3 my-0'>Awaiting Metamask Connection ...
             Only Goerli ETH accepted ... Connect account
             </p>
           </div>

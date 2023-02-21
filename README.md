@@ -21,7 +21,7 @@ This project comes with a NFT & Marketplace contract, a test for the Market cont
 
 The project has been deployed to fleek.co.
 
-https://proud-violet-3371.on.fleek.co/
+https://icy-mud-6385.on.fleek.co
 
 
 ### Run tests
