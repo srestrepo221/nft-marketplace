@@ -11,11 +11,12 @@
 - [React.js](https://reactjs.org/) (Frontend Framework)
 - [Ipfs](https://ipfs.tech/) (Metadata storage)
 
-Connect your Metamask wallet and use the Goerli testnet to purchase GB tokens with Goerli Ether.
+Connect your Metamask wallet and make sure you have Goerli test Ether in your wallet
+
+If you dont have, simply go to
 
 https://goerlifaucet.com/
 
-Please make sure you have Goerli test Ether in your wallet.
 
 This project comes with a NFT & Marketplace contract, a test for the Market contract, and a script that deploys both contracts.
 
